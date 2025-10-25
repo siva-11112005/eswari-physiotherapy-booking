@@ -1,37 +1,17 @@
-const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
-const UserSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  phone: {
-    type: String,
-    required: true
-  },
-  role: {
-    type: String,
-    enum: ['client', 'admin'],
-    default: 'client'
-  },
-  isBlocked: {
-    type: Boolean,
-    default: false
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
+module.exports = function(req, res, next) {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+
+  if (!token) {
+    return res.status(401).json({ message: 'No token, authorization denied' });
   }
-});
 
-// ✅ Prevent "OverwriteModelError" when model is imported multiple times
-module.exports = mongoose.models.User || mongoose.model('User', UserSchema);
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Token is not valid' });
+  }
+};

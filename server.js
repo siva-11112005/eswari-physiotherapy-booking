@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {  // ✅ use the correct env variable name
+mongoose.connect(process.env.MONGODB_URI, {  // ✅ use the correct env variable name
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })

@@ -7,14 +7,21 @@ const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true,
+    sparse: true,
     unique: true
   },
-  password: {
-    type: String,
-    required: true
-  },
   phone: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: function(v) {
+        return /^[6-9]\d{9}$/.test(v);
+      },
+      message: props => `${props.value} is not a valid Indian mobile number!`
+    }
+  },
+  password: {
     type: String,
     required: true
   },
@@ -22,6 +29,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ['client', 'admin'],
     default: 'client'
+  },
+  phoneVerified: {
+    type: Boolean,
+    default: false
   },
   isBlocked: {
     type: Boolean,
@@ -33,5 +44,4 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// ✅ Prevent "OverwriteModelError" when model is imported multiple times
 module.exports = mongoose.models.User || mongoose.model('User', UserSchema);

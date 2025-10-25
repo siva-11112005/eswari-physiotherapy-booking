@@ -1,29 +1,46 @@
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
+const BookingSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   name: {
     type: String,
     required: true
   },
   email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
+    type: String
   },
   phone: {
     type: String,
     required: true
   },
-  role: {
+  date: {
     type: String,
-    enum: ['client', 'admin'],
-    default: 'client'
+    required: true
   },
-  isBlocked: {
+  time: {
+    type: String,
+    required: true
+  },
+  reason: {
+    type: String
+  },
+  painType: {
+    type: String
+  },
+  verificationCode: {
+    type: String,
+    required: true
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'verified', 'cancelled'],
+    default: 'pending'
+  },
+  timeChanged: {
     type: Boolean,
     default: false
   },
@@ -33,5 +50,4 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// ✅ Prevent "OverwriteModelError" when model is imported multiple times
-module.exports = mongoose.models.User || mongoose.model('User', UserSchema);
+module.exports = mongoose.models.Booking || mongoose.model('Booking', BookingSchema);
